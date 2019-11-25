@@ -11,5 +11,6 @@ namespace SaladChef2D.UI
     {
         public int VegId;
         public string VegName;
+        public bool isChopped = false;
     }
 }

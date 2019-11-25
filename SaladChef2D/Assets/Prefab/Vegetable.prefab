@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3491301807964984050}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.7224817, y: -1.87, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -6.6165, y: -2.037, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children:
   - {fileID: 8258245300825504338}
   m_Father: {fileID: 0}
@@ -123,6 +123,7 @@ MonoBehaviour:
   Data:
     VegId: 0
     VegName: 
+    isChopped: 0
   DisplayName: {fileID: 461680288035168755}
 --- !u!1 &5707774648589539547
 GameObject:

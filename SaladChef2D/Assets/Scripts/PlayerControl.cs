@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SaladChef2D.Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace SaladChef2D.UI
     public class PlayerControl : MonoBehaviour
     {
         #region Variables
+        public PlayerData playerData;
 
         [SerializeField]
         KeyCode moveUp;
@@ -18,19 +20,22 @@ namespace SaladChef2D.UI
         [SerializeField]
         KeyCode moveLeft;
         //Controls Speed of Player
-        public float speed = 10f;
+        public float speed = 5f;
 
         //Vector to Move Players based on KeyDown
         Vector2 movement;
         Rigidbody2D playerBody;
 
         //Freeze Player to 1 Spot
-        bool freezePlayer = false;
+        public bool freezePlayer = false;
 
         public int carryCapacity = 2;
 
-        private Dictionary<string,VegDataController> vegetableList ;
+        public IDictionary<string,VegDataController> vegetableList ;
         public TextMesh VegetablesText;
+
+        //Text to Show error or Warning
+        public TextMesh ErrorText;
         #endregion
 
         #region Main Functions
@@ -71,15 +76,18 @@ namespace SaladChef2D.UI
 
         void OnCollisionEnter2D(Collision2D collision)
         {
-
+            //If Vegetable
             if (collision.gameObject.tag == "Vegetable")
             {
-                if(vegetableList.Count < 2)
+                string warningMsg = string.Empty; 
+                if (vegetableList.Count < 2)
                 {
                     GameObject vegetable = collision.gameObject;
                     if (vegetableList.ContainsKey(vegetable.name))
                     {
-                        Debug.Log("Vegetable Already Caring!");
+                        warningMsg = "Vegetable Already Caring!";
+                        Debug.Log(warningMsg);
+                        StartCoroutine(ShowWarning(warningMsg ));
                     }
                     else
                     {
@@ -91,7 +99,9 @@ namespace SaladChef2D.UI
                 }
                 else
                 {
-                    Debug.Log("Full");
+                    warningMsg = "Full";
+                    Debug.Log(warningMsg);
+                    StartCoroutine(ShowWarning(warningMsg));
                 }
             }
         }
@@ -139,6 +149,16 @@ namespace SaladChef2D.UI
             
         }
 
+        public IEnumerator ShowWarning(string msg)
+        {
+            ErrorText.text = msg;
+            //Red Color
+            ErrorText.color = new Color(255,0,0,255);
+            ErrorText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            ErrorText.gameObject.SetActive(false);
+            yield return null;
+        }
     }
 }
     
