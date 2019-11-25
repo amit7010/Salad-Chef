@@ -20,7 +20,8 @@ namespace SaladChef2D.UI
         //Controls Speed of Player
         public float speed = 10f;
 
-        //Vector2 movement;
+        //Vector to Move Players based on KeyDown
+        Vector2 movement;
         Rigidbody2D playerBody;
 
         //Freeze Player to 1 Spot
@@ -42,29 +43,30 @@ namespace SaladChef2D.UI
             vegetableList = new Dictionary<string,VegDataController>(carryCapacity);
         }
         // Update is called once per frame
-        //void Update()
-        //{
-        // # Can use GetAxisRaw for Joystick integration and other advantages 
-        //movement.x = Input.GetAxisRaw("Horizontal");
-        //movement.y = Input.GetAxisRaw("Vertical");
-
-        //Vector2 moveDirection = playerBody.velocity;
-        //if (moveDirection != Vector2.zero)
-        //{
-        //    float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-        //    playerBody.rotation = angle;
-        //}
-        //}
+        void Update()
+        {
+            //# Can use GetAxisRaw for Joystick integration and other advantages 
+            //movement.x = Input.GetAxisRaw("Horizontal");
+            //movement.y = Input.GetAxisRaw("Vertical");
+            ControlPlayer();
+            
+        }
 
         private void FixedUpdate()
         {
-            ControlPlayer();
-            //playerBody.MovePosition(playerBody.position + movement * speed * Time.fixedDeltaTime);
-            ////  # Here Time.fixedDeltaTime is used so that the speed of our movement doesn't depennd on the number of time Fixed Update function is called
+            //ControlPlayer();
+            playerBody.MovePosition(playerBody.position + movement * speed * Time.fixedDeltaTime);
+            //  # Here Time.fixedDeltaTime is used so that the speed of our movement doesn't depennd on the number of time Fixed Update function is called
 
             ////  #Player to look where it's going
             ////float angle = Mathf.Atan2(transform.position.y, transform.position.x) * Mathf.Rad2Deg;
             ////playerBody.rotation = angle;
+            Vector2 moveDirection = playerBody.velocity;
+            if (moveDirection != Vector2.zero)
+            {
+                float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+                playerBody.rotation = angle;
+            }
         }
 
         void OnCollisionEnter2D(Collision2D collision)
@@ -105,23 +107,33 @@ namespace SaladChef2D.UI
             {
                 if (Input.GetKey(moveUp))
                 {
-                    playerBody.velocity = new Vector2(transform.position.x, speed * Time.fixedDeltaTime);
+                    //playerBody.velocity = new Vector2(transform.position.x, speed );
+                    movement.x = 0;
+                    movement.y = 1;
                 }
                 else if (Input.GetKey(moveDown))
                 {
-                    playerBody.velocity = new Vector2(transform.position.x, speed * -1 * Time.fixedDeltaTime);
+                    //playerBody.velocity = new Vector2(transform.position.x, speed * -1 );
+                    movement.x = 0;
+                    movement.y = -1;
                 }
                 else if (Input.GetKey(moveRight))
                 {
-                    playerBody.velocity = new Vector2(speed * Time.fixedDeltaTime, transform.position.y );
+                    //playerBody.velocity = new Vector2(speed , transform.position.y );
+                    movement.y = 0;
+                    movement.x = 1;
                 }
                 else if (Input.GetKey(moveLeft))
                 {
-                    playerBody.velocity = new Vector2(speed * -1 * Time.fixedDeltaTime, transform.position.y );
+                    //playerBody.velocity = new Vector2(speed * -1 , transform.position.y );
+                    movement.y = 0;
+                    movement.x = -1;
                 }
                 else
                 {
-                    GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
+                    //GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
+                    movement.x = 0;
+                    movement.y = 0;
                 }
             }
             
