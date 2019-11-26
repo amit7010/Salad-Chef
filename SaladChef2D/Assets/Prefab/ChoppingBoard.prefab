@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7032227841451235495
 Transform:
   m_ObjectHideFlags: 0
@@ -497,6 +497,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerData: {fileID: 0}
+  maxChoppedVegetables: 3
   choppingTime: 1
   choppingLoader: {fileID: 8053325738923005960}
-  choppingText: {fileID: 0}
+  choppingTimeText: {fileID: 83465420283032106}
+  choppingInstruction: {fileID: 9003922325040849343}

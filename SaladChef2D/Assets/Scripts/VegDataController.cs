@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SaladChef2D.UI
 {
     /// <summary>
-    /// Class keeps track of Vegetable
+    /// Class keeps track of a Vegetable
     /// </summary>
     public class VegDataController : MonoBehaviour
     {

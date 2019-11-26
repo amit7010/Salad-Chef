@@ -31,11 +31,14 @@ namespace SaladChef2D.UI
 
         public int carryCapacity = 2;
 
-        public IDictionary<string,VegDataController> vegetableList ;
+        public IList<VegDataController> rawVegetableList;
+        public IList<VegDataController> choppedVegetableList;
         public TextMesh VegetablesText;
 
         //Text to Show error or Warning
         public TextMesh ErrorText;
+        
+        public PlayerStatus playerStatus = PlayerStatus.EMPTY;
         #endregion
 
         #region Main Functions
@@ -45,8 +48,10 @@ namespace SaladChef2D.UI
             //Get RigidBodyComponent
             playerBody = GetComponent<Rigidbody2D>();
             //Initialize Vegetable Carrying Capacity List
-            vegetableList = new Dictionary<string,VegDataController>(carryCapacity);
+            rawVegetableList = new List<VegDataController>(carryCapacity);
+            choppedVegetableList = new List<VegDataController>(carryCapacity+1);
         }
+
         // Update is called once per frame
         void Update()
         {
@@ -79,34 +84,172 @@ namespace SaladChef2D.UI
             //If Vegetable
             if (collision.gameObject.tag == "Vegetable")
             {
-                string warningMsg = string.Empty; 
-                if (vegetableList.Count < 2)
+                string warningMsg = string.Empty;
+
+                if (playerStatus == PlayerStatus.CHOPPEDVEG)
                 {
-                    GameObject vegetable = collision.gameObject;
-                    if (vegetableList.ContainsKey(vegetable.name))
+                    warningMsg = "Have Chopped Veggies";
+                    Debug.Log(warningMsg);
+                    StartCoroutine(ShowWarning(warningMsg));
+                    return;
+                }
+
+                //If Vegetables are less then CarryCapacity
+                if (rawVegetableList.Count < carryCapacity)
+                {
+                    VegDataController vegetable = collision.gameObject.GetComponent<VegDataController>();
+                    if (!PlayerHasVegetable(vegetable))
                     {
-                        warningMsg = "Vegetable Already Caring!";
-                        Debug.Log(warningMsg);
-                        StartCoroutine(ShowWarning(warningMsg ));
+                        //Adding Vegetable to Player
+                        AddVegetableToBag(vegetable,PlayerStatus.RAWVEG);
                     }
                     else
                     {
-                        VegDataController vegController = vegetable.GetComponent<VegDataController>();
-                        vegetableList.Add(vegetable.name, vegController);
-                        VegetablesText.text += vegController.Data.VegName;
+                        warningMsg = "Vegetable Already Carrying!";
+                        Debug.Log(warningMsg);
+                        StartCoroutine(ShowWarning(warningMsg));
                     }
                     Debug.Log("Vegetable : " + vegetable.name);
                 }
                 else
                 {
-                    warningMsg = "Full";
+                    warningMsg = "Bag Full";
                     Debug.Log(warningMsg);
                     StartCoroutine(ShowWarning(warningMsg));
                 }
             }
         }
 
+        /// <summary>
+        /// Function to Add Vegetable to Player's Bag
+        /// </summary>
+        /// <param name="vegetable"></param>
+        public bool AddVegetableToBag(VegDataController vegetable,PlayerStatus status)
+        {
+            bool isAdded = false;
+
+            VegDataController vegetableData = vegetable.GetComponent<VegDataController>();
+            if (status == PlayerStatus.RAWVEG || status == PlayerStatus.EMPTY)
+            {
+                if ( rawVegetableList.Count < 2)
+                {
+                    rawVegetableList.Add(vegetableData);
+                    isAdded = true;
+                }
+                else
+                {
+                    isAdded = false;
+                }
+                
+            }
+            else 
+            {
+                if (choppedVegetableList.Count < 3)
+                {
+                    vegetableData.Data.isChopped = true;
+                    choppedVegetableList.Add(vegetableData);
+                    isAdded = true;
+                }
+                else
+                {
+                    isAdded = false;
+                }
+                    
+            }
+            AssignPlayerStatus();
+            ShowVegetableNames();
+            return isAdded;
+        }
+
+        /// <summary>
+        /// Function to Remove Vegetable from Player's Bag
+        /// </summary>
+        public VegDataController RemoveRawVegetableFromBag()
+        {
+            VegDataController vegetableToRemove = rawVegetableList[0];
+            rawVegetableList.RemoveAt(0);
+            AssignPlayerStatus();
+            ShowVegetableNames();
+            return vegetableToRemove;
+        }
+        /// <summary>
+        /// Function to Remove Vegetable from Player's Bag
+        /// </summary>
+        /// <param name="vegetable"></param>
+        public void RemoveChoppedVegetableFromBag(VegDataController vegetable)
+        {
+            VegDataController vegetableData = vegetable.GetComponent<VegDataController>();
+            choppedVegetableList.Remove(vegetableData);
+            AssignPlayerStatus();
+            ShowVegetableNames();
+        }
+
         #endregion
+        /// <summary>
+        /// Function to Assign Status(On the basis of vegetable it is carrying) to Player
+        /// </summary>
+        public void AssignPlayerStatus()
+        {
+            if(rawVegetableList.Count == 0 && choppedVegetableList.Count == 0)
+            {
+                playerStatus = PlayerStatus.EMPTY;
+            }
+            else if(rawVegetableList.Count > 0)
+            {
+                playerStatus = PlayerStatus.RAWVEG;
+            }
+            else if(choppedVegetableList.Count > 0)
+            {
+                playerStatus = PlayerStatus.CHOPPEDVEG;
+            }
+            else
+            {
+                Debug.LogError("Player Status Error");
+            }
+        }
+
+        /// <summary>
+        /// Function to check if player has vegetables
+        /// </summary>
+        /// <param name="vegetable"></param>
+        /// <returns></returns>
+        private bool PlayerHasVegetable(VegDataController vegetable)
+        {
+            foreach (VegDataController veg in rawVegetableList)
+            {
+                if (vegetable.Data.VegId == veg.Data.VegId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Function to show vegetable Names
+        /// </summary>
+        /// <param name="vegetableList"></param>
+        public void ShowVegetableNames()
+        {
+            VegetablesText.text = "";
+            if (playerStatus == PlayerStatus.RAWVEG)
+            {
+                foreach (VegDataController veg in rawVegetableList)
+                {
+                    VegetablesText.color = Color.yellow;
+                    VegetablesText.text += veg.Data.VegName;
+                }
+            }
+            else
+            {
+                foreach (VegDataController veg in choppedVegetableList)
+                {
+                    VegetablesText.color = new Color(100, 255, 0, 255);
+                    VegetablesText.text += veg.Data.VegName;
+                }
+            }
+            
+        }
 
         /// <summary>
         /// Function to Control Player with keyboard keys
@@ -148,7 +291,7 @@ namespace SaladChef2D.UI
             }
             
         }
-
+        
         public IEnumerator ShowWarning(string msg)
         {
             ErrorText.text = msg;
