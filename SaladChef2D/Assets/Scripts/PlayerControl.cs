@@ -9,7 +9,10 @@ namespace SaladChef2D.UI
     public class PlayerControl : MonoBehaviour
     {
         #region Variables
+        //Serializable Player Data
         public PlayerData playerData;
+        //Total Player Store
+        private int playerScore = 0;
 
         [SerializeField]
         KeyCode moveUp;
@@ -50,6 +53,9 @@ namespace SaladChef2D.UI
             //Initialize Vegetable Carrying Capacity List
             rawVegetableList = new List<VegDataController>(carryCapacity);
             choppedVegetableList = new List<VegDataController>(carryCapacity+1);
+            playerScore = 0;
+
+
         }
 
         // Update is called once per frame
@@ -124,11 +130,10 @@ namespace SaladChef2D.UI
         /// Function to Add Vegetable to Player's Bag
         /// </summary>
         /// <param name="vegetable"></param>
-        public bool AddVegetableToBag(VegDataController vegetable,PlayerStatus status)
+        public bool AddVegetableToBag(VegDataController vegetableData,PlayerStatus status)
         {
             bool isAdded = false;
-
-            VegDataController vegetableData = vegetable.GetComponent<VegDataController>();
+            
             if (status == PlayerStatus.RAWVEG || status == PlayerStatus.EMPTY)
             {
                 if ( rawVegetableList.Count < 2)

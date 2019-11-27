@@ -29,11 +29,20 @@ namespace SaladChef2D.UI
                     {
                         bool AddingVeg = false;
                         AddingVeg = playerData.AddVegetableToBag(oneVegetable, playerData.playerStatus);
-                        PlateContentText.text = oneVegetable.Data.VegName;
+                        if (AddingVeg)
+                        {
+                            PlateContentText.text = oneVegetable.Data.VegName;
+                        }
+                        else
+                        {
+                            Debug.Log("Player Bag Full");
+                            StartCoroutine(playerData.ShowWarning("Player Bag Full"));
+                        }
                     }
                 }
                 else
                 {
+                    StartCoroutine(playerData.ShowWarning("Can't Place Salads!"));
                     Debug.Log("Can't Place");
                 }
             }
