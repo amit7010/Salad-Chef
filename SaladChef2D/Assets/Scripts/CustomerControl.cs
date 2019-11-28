@@ -10,6 +10,8 @@ namespace SaladChef2D.UI
     {
         //Have List of all vegetables
         public List<VegDataController> VegetableMenu;
+        //List of All Players
+        public List<PlayerControl> players;
         //Customer selection of salad needed
         private List<VegDataController> neededSalad;
         [SerializeField]
@@ -19,10 +21,15 @@ namespace SaladChef2D.UI
         public TextMesh platetxt;
         public Text loadingTxt;
         public Image loadingImage;
-        private int giveScore = 0;
+        public Text refreshTxt;
+        public Image refreshImage;
+        private int giveScore = 20;
         [SerializeField]
         private float totalCustomerWaitingTime = 10f;
-        private float customerTimeRemaining = 10f;
+        [SerializeField]
+        private float refreshTime = 3f;
+        private float refreshTimeLeft = 0f;
+        private float customerTimeRemaining;
         private CustomerStatus customerStatus = CustomerStatus.WAITING;
         //For Timer Invoking Purpose
         bool invokeOp = false;
@@ -30,48 +37,75 @@ namespace SaladChef2D.UI
         private void Awake()
         {
             neededSalad = new List<VegDataController>();
-            totalCustomerWaitingTime = customerTimeRemaining;
+            refreshTimeLeft = refreshTime;
             StartCoroutine(InitCustomer());
         }
         
         private void OnCollisionEnter2D(Collision2D collision)
         {
             //1. Get player
-            GameObject player = collision.gameObject;
+            PlayerControl player = collision.gameObject.GetComponent<PlayerControl>();
+
             //2. Check Salad
-            IList<VegDataController> playersSalad = player.GetComponent<PlayerControl>().choppedVegetableList;
+            IList<VegDataController> playersSalad = player.choppedVegetableList;
             bool SaladVerified = CheckSalad(playersSalad);
-            if(SaladVerified)
+
+            if (SaladVerified)
             {
                 //Reset Player Salads;
-                playersSalad = new List<VegDataController>();
-                //Reset neededSalads;
-                neededSalad = new List<VegDataController>();
-                //Init Customer Again.
-                StartCoroutine(InitCustomer());
-                Debug.Log("Scored");
+                player.choppedVegetableList = new List<VegDataController>();
+
+                player.playerScore += giveScore;
+                StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(true, giveScore, player.name));
+                //Show PowerUp
+                GivePowerUps();
+                StartCoroutine(RefreshCustomer());
+
             }
             else
             {
                 Debug.Log("Failed");
+                player.playerScore -= 2;
+                return;
             }
             //3. Check Time & Assign Status
             //4. Give Score/ Add Score to Player
             //5. Init Customer Again
+
         }
 
         private void Update()
         {
-            if(customerTimeRemaining > 0)
+            if(customerTimeRemaining >= 0)
             {
                 loadingImage.fillAmount = customerTimeRemaining/totalCustomerWaitingTime;
                 loadingTxt.text = (customerTimeRemaining).ToString();
             }
             else
             {
-                ResetTimer(totalCustomerWaitingTime);
+                refreshImage.fillAmount = refreshTimeLeft / refreshTime;
+
             }
             
+        }
+
+        /// <summary>
+        /// Function to Refresh Customer
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator RefreshCustomer()
+        {
+            refreshImage.gameObject.SetActive(true);
+            refreshTxt.gameObject.SetActive(true);
+            loadingImage.gameObject.SetActive(false);
+            loadingTxt.gameObject.SetActive(false);
+            yield return new WaitForSeconds(refreshTime);
+            loadingImage.gameObject.SetActive(true);
+            loadingTxt.gameObject.SetActive(true);
+            StartCoroutine(InitCustomer());
+            yield return new WaitForSeconds(1f);
+            refreshImage.gameObject.SetActive(false);
+            refreshTxt.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -81,14 +115,16 @@ namespace SaladChef2D.UI
         private IEnumerator InitCustomer()
         {
             //0. Wait for some time before start
-            yield return new WaitForSeconds(UnityEngine.Random.Range(0.5f,4f));
-
+            yield return new WaitForSeconds(UnityEngine.Random.Range(0.5f,1f));
+            // Reset/Set Customer Time
+            customerTimeRemaining = totalCustomerWaitingTime;
             //1. Get All Veggies
             //-- Got from Inspector --
-
+            //Reset neededSalads;
+            neededSalad = new List<VegDataController>();
             //2. Pick Vegg Salad required
             //2.1 Finalize Salad needed
-            for(int i = 0; i < maxNumberOfVegs; i++)
+            for (int i = 0; i < maxNumberOfVegs; i++)
             {
                 int vegNumber = UnityEngine.Random.Range(0, VegetableMenu.Count);
                 if(!neededSalad.Contains(VegetableMenu[vegNumber]))
@@ -102,6 +138,7 @@ namespace SaladChef2D.UI
                     --i;
                 }
             }
+
             //2.2 Show on Text
             platetxt.text = "";
             foreach(VegDataController salad in neededSalad)
@@ -129,6 +166,7 @@ namespace SaladChef2D.UI
 
         /// <summary>
         /// Function to Start Customer Timer
+        /// The function runs every Second
         /// </summary>
         void StartTimer()
         {
@@ -136,7 +174,35 @@ namespace SaladChef2D.UI
             {
                 customerTimeRemaining -= 1;
             }
-            //GiveCustomerStatus();
+            else if(customerTimeRemaining == 0)
+            {
+                StartCoroutine(RefreshCustomer());
+                refreshTimeLeft -= 1;
+                customerTimeRemaining -= 1;
+                //Function to reduce all players score
+                ReduceAllPlayersScore();
+            }
+            else
+            {
+                refreshTimeLeft -= 1;
+            }
+        }
+
+        /// <summary>
+        /// Function to reduce all player's Score
+        /// </summary>
+        private void ReduceAllPlayersScore()
+        {
+            //Get All Players
+            //Get From Inspector
+            //Reduce All Players Score
+            foreach (PlayerControl player in players)
+            {
+                player.playerScore -= 5;
+            }
+            //Show Point reduction PopUp
+            StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(false, 5, ""));
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -165,15 +231,16 @@ namespace SaladChef2D.UI
         }
 
         /// <summary>
-        /// Function to Give Customer Status Based on Time
+        /// Function to Give Player PowerUps based on TimeLine
         /// </summary>
-        private void GiveCustomerStatus()
+        private void GivePowerUps()
         {
             float percentage = 100 * (customerTimeRemaining / totalCustomerWaitingTime);
             if (percentage >= 70)
             {
                 //Spawn PowerUps
                 Debug.Log("PowerUp");
+                StartCoroutine(PopUpNPowerUp.Instance.ShowPowerUps());
             }
             else
             {
@@ -190,6 +257,10 @@ namespace SaladChef2D.UI
             customerTimeRemaining = requiredTime;
         }
 
+        /// <summary>
+        /// Function to set Customer Status
+        /// </summary>
+        /// <param name="status"></param>
         private void SetCustomerStatus(CustomerStatus status)
         {
             customerStatus = status;

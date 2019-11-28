@@ -16,7 +16,8 @@ namespace SaladChef2D.UI
             playerData.AssignPlayerStatus();
             playerData.ShowVegetableNames();
             //2. Reduce Score
-
+            playerData.playerScore -= 5;
+            StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(false, 5, player.name));
 
         }
     }

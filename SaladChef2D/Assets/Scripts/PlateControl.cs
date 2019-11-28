@@ -22,8 +22,17 @@ namespace SaladChef2D.UI
                     if (!plateFull)
                     {
                         oneVegetable = playerData.RemoveRawVegetableFromBag();
-                        PlateContentText.text = oneVegetable.Data.VegName;
-                        plateFull = true;
+                        if(oneVegetable != null)
+                        {
+
+                            PlateContentText.text = oneVegetable.Data.VegName;
+                            plateFull = true;
+                        }
+                        else
+                        {
+                            plateFull = false;
+                            Debug.Log("Empty Player Bag");
+                        }
                     }
                     else
                     {
@@ -31,7 +40,8 @@ namespace SaladChef2D.UI
                         AddingVeg = playerData.AddVegetableToBag(oneVegetable, playerData.playerStatus);
                         if (AddingVeg)
                         {
-                            PlateContentText.text = oneVegetable.Data.VegName;
+                            oneVegetable = new VegDataController();
+                            PlateContentText.text = "";
                         }
                         else
                         {

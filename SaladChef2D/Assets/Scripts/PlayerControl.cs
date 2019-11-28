@@ -1,7 +1,9 @@
 ﻿using SaladChef2D.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SaladChef2D.UI
 {
@@ -12,18 +14,26 @@ namespace SaladChef2D.UI
         //Serializable Player Data
         public PlayerData playerData;
         //Total Player Store
-        private int playerScore = 0;
+        //Setter Sets only Positive value
+        public int playerScore; //{ get { return playerScore; } set { if (value > 0) { playerScore = value; } else { playerScore = 0; } } }
+        [SerializeField]
+        private float playerTimeLeft = 0f;
 
-        [SerializeField]
-        KeyCode moveUp;
-        [SerializeField]
-        KeyCode moveDown;
-        [SerializeField]
-        KeyCode moveRight;
-        [SerializeField]
-        KeyCode moveLeft;
-        //Controls Speed of Player
-        public float speed = 5f;
+        public Text ScoreTxt;
+        public Text timeTxt;
+
+        #region Controls
+            [SerializeField]
+            KeyCode moveUp;
+            [SerializeField]
+            KeyCode moveDown;
+            [SerializeField]
+            KeyCode moveRight;
+            [SerializeField]
+            KeyCode moveLeft;
+            //Controls Speed of Player
+            public float speed = 5f;
+        #endregion
 
         //Vector to Move Players based on KeyDown
         Vector2 movement;
@@ -42,6 +52,9 @@ namespace SaladChef2D.UI
         public TextMesh ErrorText;
         
         public PlayerStatus playerStatus = PlayerStatus.EMPTY;
+
+        //For Calculation Purpose
+        Vector3 initialPosition;
         #endregion
 
         #region Main Functions
@@ -54,23 +67,17 @@ namespace SaladChef2D.UI
             rawVegetableList = new List<VegDataController>(carryCapacity);
             choppedVegetableList = new List<VegDataController>(carryCapacity+1);
             playerScore = 0;
-
-
+            InvokeRepeating("StartPlayerTimer", 1.0f, 1.0f);
+            initialPosition = new Vector3(transform.position.x,transform.position.y,transform.position.z);
+            AssignPlayerStatus();
         }
 
-        // Update is called once per frame
-        void Update()
+        private void FixedUpdate()
         {
             //# Can use GetAxisRaw for Joystick integration and other advantages 
             //movement.x = Input.GetAxisRaw("Horizontal");
             //movement.y = Input.GetAxisRaw("Vertical");
             ControlPlayer();
-            
-        }
-
-        private void FixedUpdate()
-        {
-            //ControlPlayer();
             playerBody.MovePosition(playerBody.position + movement * speed * Time.fixedDeltaTime);
             //  # Here Time.fixedDeltaTime is used so that the speed of our movement doesn't depennd on the number of time Fixed Update function is called
 
@@ -81,7 +88,7 @@ namespace SaladChef2D.UI
             if (moveDirection != Vector2.zero)
             {
                 float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-                playerBody.rotation = angle;
+                playerBody.rotation = angle; 
             }
         }
 
@@ -124,6 +131,36 @@ namespace SaladChef2D.UI
                     StartCoroutine(ShowWarning(warningMsg));
                 }
             }
+        }
+
+        /// <summary>
+        /// Function to Start Player Time
+        /// 
+        /// </summary>
+        void StartPlayerTimer()
+        {
+            if(playerTimeLeft>0)
+            {
+                playerTimeLeft--;
+            }
+            else
+            {
+                CancelInvoke("StartPlayerTimer");
+                freezePlayer = true;
+                StartCoroutine(ShowWarning("GAME OVER"));
+            }
+            ShowTimeLeft();
+            ShowScoreLeft();
+        }
+
+        private void ShowScoreLeft()
+        {
+            ScoreTxt.text = "Score : " + playerScore;
+        }
+
+        private void ShowTimeLeft()
+        {
+            timeTxt.text = "Time : " + playerTimeLeft;
         }
 
         /// <summary>
@@ -171,12 +208,20 @@ namespace SaladChef2D.UI
         /// </summary>
         public VegDataController RemoveRawVegetableFromBag()
         {
-            VegDataController vegetableToRemove = rawVegetableList[0];
-            rawVegetableList.RemoveAt(0);
-            AssignPlayerStatus();
-            ShowVegetableNames();
-            return vegetableToRemove;
+            if(rawVegetableList.Count >0)
+            {
+                VegDataController vegetableToRemove = rawVegetableList[0];
+                rawVegetableList.RemoveAt(0);
+                AssignPlayerStatus();
+                ShowVegetableNames();
+                return vegetableToRemove;
+            }
+            else
+            {
+                return null;
+            }
         }
+
         /// <summary>
         /// Function to Remove Vegetable from Player's Bag
         /// </summary>
@@ -237,7 +282,7 @@ namespace SaladChef2D.UI
         public void ShowVegetableNames()
         {
             VegetablesText.text = "";
-            if (playerStatus == PlayerStatus.RAWVEG)
+            if (playerStatus == PlayerStatus.RAWVEG || playerStatus == PlayerStatus.EMPTY)
             {
                 foreach (VegDataController veg in rawVegetableList)
                 {
@@ -249,7 +294,7 @@ namespace SaladChef2D.UI
             {
                 foreach (VegDataController veg in choppedVegetableList)
                 {
-                    VegetablesText.color = new Color(100, 255, 0, 255);
+                    VegetablesText.color = Color.cyan;
                     VegetablesText.text += veg.Data.VegName;
                 }
             }
@@ -294,7 +339,14 @@ namespace SaladChef2D.UI
                     movement.y = 0;
                 }
             }
-            
+            else if(freezePlayer && playerTimeLeft <=0 )
+            {
+                //playerBody.velocity = new Vector2(0f,0f);
+                playerBody.GetComponent<Rigidbody2D>().simulated = false;
+                playerBody.transform.position = initialPosition;
+
+            }
+
         }
         
         public IEnumerator ShowWarning(string msg)
