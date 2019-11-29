@@ -31,6 +31,8 @@ namespace SaladChef2D.UI
         private float refreshTimeLeft = 0f;
         private float customerTimeRemaining;
         private CustomerStatus customerStatus = CustomerStatus.WAITING;
+
+        private int reduceScoreValueOnTimeUp = 5;
         //For Timer Invoking Purpose
         bool invokeOp = false;
 
@@ -54,9 +56,11 @@ namespace SaladChef2D.UI
             {
                 //Reset Player Salads;
                 player.choppedVegetableList = new List<VegDataController>();
-
+                player.AssignPlayerStatus();
+                player.ShowVegetableNames();
                 player.playerScore += giveScore;
-                StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(true, giveScore, player.name));
+                string scoreMsg = giveScore + " pts";
+                StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(true, scoreMsg, player.name));
                 //Show PowerUp
                 GivePowerUps();
                 StartCoroutine(RefreshCustomer());
@@ -194,14 +198,16 @@ namespace SaladChef2D.UI
         private void ReduceAllPlayersScore()
         {
             //Get All Players
-            //Get From Inspector
+                //Got From Inspector
+            
             //Reduce All Players Score
             foreach (PlayerControl player in players)
             {
-                player.playerScore -= 5;
+                player.playerScore -= reduceScoreValueOnTimeUp;
             }
             //Show Point reduction PopUp
-            StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(false, 5, ""));
+            string scoreMsg = reduceScoreValueOnTimeUp + " pts";
+            StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(false, scoreMsg , "ALL Players"));
             //throw new NotImplementedException();
         }
 

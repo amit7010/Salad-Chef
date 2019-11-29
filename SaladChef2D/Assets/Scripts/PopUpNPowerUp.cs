@@ -7,6 +7,8 @@ namespace SaladChef2D.UI
 {
     public class PopUpNPowerUp : Singleton<PopUpNPowerUp>
     {
+        #region Variables
+
         //PopUp Text
         public TextMesh popUp;
         //PowerUp Parent - if not given, the attached gameObject will be Parent
@@ -24,6 +26,10 @@ namespace SaladChef2D.UI
         public float yMin;
         public float yMax;
 
+        #endregion
+
+        #region Helper Functions 
+
         /// <summary>
         /// Function to Show PopUP
         /// </summary>
@@ -31,18 +37,18 @@ namespace SaladChef2D.UI
         /// <param name="point"></param>
         /// <param name="playerName"></param>
         /// <returns></returns>
-        public IEnumerator ShowPopup(bool isPositive,int point, string playerName)
+        public IEnumerator ShowPopup(bool isPositive,string pointMsg, string playerName)
         {
             popUp.gameObject.SetActive(true);
             if(isPositive)
             {
                 popUp.color = Color.green;
-                popUp.text = "+" + point + " pts for "+playerName;
+                popUp.text = "+" + pointMsg + " for "+playerName;
             }                                    
             else                                 
             {                                    
                 popUp.color = Color.red;         
-                popUp.text = "-" + point + " pts for "+playerName;
+                popUp.text = "-" + pointMsg + " for "+playerName;
             }
             yield return new WaitForSeconds(PopUpTime);
             popUp.gameObject.SetActive(false);
@@ -65,5 +71,7 @@ namespace SaladChef2D.UI
             //GameObject newGoods = (GameObject)Instantiate(goodsPrefab, pos)
             //newgoods.something = somethingelse;
         }
+
+        #endregion
     }
 }

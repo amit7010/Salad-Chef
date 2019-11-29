@@ -153,11 +153,17 @@ namespace SaladChef2D.UI
             ShowScoreLeft();
         }
 
+        /// <summary>
+        /// Function to Show Score left text
+        /// </summary>
         private void ShowScoreLeft()
         {
             ScoreTxt.text = "Score : " + playerScore;
         }
 
+        /// <summary>
+        /// Function to Show Time Left text
+        /// </summary>
         private void ShowTimeLeft()
         {
             timeTxt.text = "Time : " + playerTimeLeft;
@@ -182,7 +188,6 @@ namespace SaladChef2D.UI
                 {
                     isAdded = false;
                 }
-                
             }
             else 
             {
@@ -196,7 +201,6 @@ namespace SaladChef2D.UI
                 {
                     isAdded = false;
                 }
-                    
             }
             AssignPlayerStatus();
             ShowVegetableNames();
@@ -282,7 +286,7 @@ namespace SaladChef2D.UI
         public void ShowVegetableNames()
         {
             VegetablesText.text = "";
-            if (playerStatus == PlayerStatus.RAWVEG || playerStatus == PlayerStatus.EMPTY)
+            if ((playerStatus == PlayerStatus.RAWVEG || playerStatus == PlayerStatus.EMPTY) && rawVegetableList.Count > 0)
             {
                 foreach (VegDataController veg in rawVegetableList)
                 {
@@ -290,7 +294,7 @@ namespace SaladChef2D.UI
                     VegetablesText.text += veg.Data.VegName;
                 }
             }
-            else
+            else if(choppedVegetableList.Count > 0)
             {
                 foreach (VegDataController veg in choppedVegetableList)
                 {

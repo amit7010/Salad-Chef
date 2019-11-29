@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 7181557305287999530}
   - component: {fileID: 7181557305287999531}
   - component: {fileID: 7181557305287999532}
+  - component: {fileID: 5036596104561621423}
   m_Layer: 0
-  m_Name: PowerUp3
+  m_Name: SpeedBoost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,7 +70,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 21428f095326ede4e81ef37103f1d14c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8e50b801b231bd340b3ee034d1279f92, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -95,4 +96,17 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1.5
+--- !u!114 &5036596104561621423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7181557305287999533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be5634f0723e464ba0f7526218c39cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerUpType: 0

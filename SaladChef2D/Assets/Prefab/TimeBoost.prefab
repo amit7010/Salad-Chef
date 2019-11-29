@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 7181557305287999530}
   - component: {fileID: 7181557305287999531}
   - component: {fileID: 7181557305287999532}
+  - component: {fileID: 7565026371991064326}
   m_Layer: 0
-  m_Name: PowerUp 2
+  m_Name: TimeBoost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,4 +96,17 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1.5
+--- !u!114 &7565026371991064326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7181557305287999533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be5634f0723e464ba0f7526218c39cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerUpType: 2

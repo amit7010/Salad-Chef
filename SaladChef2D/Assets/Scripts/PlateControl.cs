@@ -36,12 +36,14 @@ namespace SaladChef2D.UI
                     }
                     else
                     {
+                        
                         bool AddingVeg = false;
                         AddingVeg = playerData.AddVegetableToBag(oneVegetable, playerData.playerStatus);
                         if (AddingVeg)
                         {
                             oneVegetable = new VegDataController();
                             PlateContentText.text = "";
+                            plateFull = false;
                         }
                         else
                         {
