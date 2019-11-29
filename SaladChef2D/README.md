@@ -39,11 +39,11 @@ Salad2D is a prototype of a (upcoming) salad chef simulation made in  **Unity** 
 
 ## ScreenShots
 > Initial Screen
-<img scr="Screenshots/StartGame.png" alt="StartGame" />
+![alt text](https://github.com/amit7010/Salad-Chef/blob/master/SaladChef2D/Screenshots/StartGame.PNG)
 > Player Carrying Vegetables
-<img scr="./Screenshots/PlayerWithVegetables.png" alt="Player"/>
+![alt text](https://github.com/amit7010/Salad-Chef/blob/master/SaladChef2D/Screenshots/PowerUps.PNG)
 > PowerUps
-<img scr="./Screenshots/PowerUps.png" alt="PickUps"/>
+![alt text](https://github.com/amit7010/Salad-Chef/blob/master/SaladChef2D/Screenshots/PlayerWithVegetables.PNG)
 
 # <u>[*Documentation INPROGRESS*]</u>
 ## UML diagrams
