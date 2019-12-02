@@ -17,7 +17,7 @@ namespace SaladChef2D.UI
         //Setter Sets only Positive value
         public int playerScore; //{ get { return playerScore; } set { if (value > 0) { playerScore = value; } else { playerScore = 0; } } }
         [SerializeField]
-        private float playerTimeLeft = 0f;
+        public float playerTimeLeft = 0f;
 
         public Text ScoreTxt;
         public Text timeTxt;

@@ -1,14 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SaladChef2D.UI
 {
     public class MenuControl : MonoBehaviour
     {
+        [SerializeField]
+        PlayerControl player1;
+        [SerializeField]
+        PlayerControl player2;
+
         public static bool isGamePaused = false;
 
         public GameObject pauseMenuUI;
+        public GameObject GameOverMenuUI;
+        public Text Winnertxt;
 
         void Update()
         {
@@ -21,6 +29,24 @@ namespace SaladChef2D.UI
                 else
                 {
                     Pause();
+                }
+            }
+            if(player1.playerTimeLeft == 0 && player2.playerTimeLeft == 0)
+            {
+                //Stop Game
+                Time.timeScale = 0f;
+                GameOverMenuUI.SetActive(true);
+                if (player1.playerScore > player2.playerScore)
+                {
+                    Winnertxt.text = player1.name + " WINS!!";
+                }
+                else if(player1.playerScore < player2.playerScore)
+                {
+                    Winnertxt.text = player2.name + " WINS!!";
+                }
+                else
+                {
+                    Winnertxt.text = "DRAW";
                 }
             }
         }

@@ -19,6 +19,7 @@ namespace SaladChef2D.UI
         private int maxNumberOfVegs = 3;
         [Tooltip("Plate text for Salad")]
         public TextMesh platetxt;
+        public TextMesh Angrytxt;
         public Text loadingTxt;
         public Image loadingImage;
         public Text refreshTxt;
@@ -68,8 +69,11 @@ namespace SaladChef2D.UI
             }
             else
             {
-                Debug.Log("Failed");
-                player.playerScore -= 2;
+                Debug.Log("Angry Customer");
+                player.playerScore -= 5;
+                string scoreMsg = -5 + " pts";
+                StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(false, scoreMsg, player.name));
+                StartCoroutine(RefreshCustomer());
                 return;
             }
             //3. Check Time & Assign Status
@@ -120,12 +124,16 @@ namespace SaladChef2D.UI
         {
             //0. Wait for some time before start
             yield return new WaitForSeconds(UnityEngine.Random.Range(0.5f,1f));
-            // Reset/Set Customer Time
-            customerTimeRemaining = totalCustomerWaitingTime;
             //1. Get All Veggies
             //-- Got from Inspector --
             //Reset neededSalads;
             neededSalad = new List<VegDataController>();
+            //Decide Max Number of Veggies
+            maxNumberOfVegs = UnityEngine.Random.Range(2, VegetableMenu.Count);
+            totalCustomerWaitingTime = maxNumberOfVegs * 20;
+            // Reset/Set Customer Time
+            customerTimeRemaining = totalCustomerWaitingTime;
+
             //2. Pick Vegg Salad required
             //2.1 Finalize Salad needed
             for (int i = 0; i < maxNumberOfVegs; i++)
@@ -151,7 +159,10 @@ namespace SaladChef2D.UI
             }
 
             //2.3 Set Status
-            SetCustomerStatus(CustomerStatus.WAITING);
+            if(customerStatus != CustomerStatus.ANGRY)
+            {
+                SetCustomerStatus(CustomerStatus.WAITING);
+            }
 
             //3. Start Timer
             if (!invokeOp)
@@ -174,7 +185,11 @@ namespace SaladChef2D.UI
         /// </summary>
         void StartTimer()
         {
-            if(customerTimeRemaining > 0)
+            if(customerTimeRemaining > 0 && customerStatus == CustomerStatus.ANGRY)
+            {
+                customerTimeRemaining -= 2;
+            }
+            else if(customerTimeRemaining > 0)
             {
                 customerTimeRemaining -= 1;
             }
@@ -185,6 +200,12 @@ namespace SaladChef2D.UI
                 customerTimeRemaining -= 1;
                 //Function to reduce all players score
                 ReduceAllPlayersScore();
+
+                //Refactoring needed
+                SetCustomerStatus(CustomerStatus.ANGRY);
+                Angrytxt.gameObject.SetActive(true);
+                GetComponent<SpriteRenderer>().color = new Color(240.0f/255.0f, 120.0f/255.0f, 120.0f/255.0f, 250.0f/255.0f);
+
             }
             else
             {
@@ -208,7 +229,6 @@ namespace SaladChef2D.UI
             //Show Point reduction PopUp
             string scoreMsg = reduceScoreValueOnTimeUp + " pts";
             StartCoroutine(PopUpNPowerUp.Instance.ShowPopup(false, scoreMsg , "ALL Players"));
-            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -218,7 +238,7 @@ namespace SaladChef2D.UI
         /// <returns></returns>
         private bool CheckSalad(IList<VegDataController> playersSalad)
         {
-            if(playersSalad.Count >= maxNumberOfVegs)
+            if(playersSalad.Count == maxNumberOfVegs)
             {
                 foreach (VegDataController saladContent in playersSalad)
                 {
