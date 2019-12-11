@@ -1,0 +1,92 @@
+# 3ds Max Wavefront OBJ Exporter v0.94b - (c)2007 guruware
+# File Created: 30.09.2008 11:39:41
+
+newmtl ligne_roset_comodino_bar_mtl_1
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka dcmap_ligne_roset_comodino_bar_1.jpg
+	map_Kd dcmap_ligne_roset_comodino_bar_1.jpg
+	map_bump dcmap_ligne_roset_comodino_bar_2.jpg
+	bump dcmap_ligne_roset_comodino_bar_2.jpg
+
+newmtl ligne_roset_comodino_bar_mtl_2
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5000 0.5000 0.5000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka dcmap_ligne_roset_comodino_bar_3.jpg
+	map_Kd dcmap_ligne_roset_comodino_bar_3.jpg
+	map_bump dcmap_ligne_roset_comodino_bar_4.jpg
+	bump dcmap_ligne_roset_comodino_bar_4.jpg
+
+newmtl ligne_roset_comodino_bar_mtl_3
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.4863 0.4863 0.4863
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl ligne_roset_comodino_bar_mtl_4
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.4863 0.4863 0.4863
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl ligne_roset_comodino_bar_mtl_5
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.0000 0.0000 0.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl ligne_roset_comodino_bar_mtl_6
+	Ns 10.0000
+	Ni 1.5000
+	d 0.0863
+	Tr 0.0863
+	Tf 0.0863 0.0863 0.0863 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.9922 1.0000 1.0000
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl wire_224143087
+	Ns 32
+	d 1
+	Tr 1
+	Tf 1 1 1
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.8784 0.5608 0.3412
+	Ks 0.3500 0.3500 0.3500
