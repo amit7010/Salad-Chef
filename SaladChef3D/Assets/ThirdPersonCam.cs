@@ -55,12 +55,13 @@ public class ThirdPersonCam : MonoBehaviour
             _LocalRotation.y = Input.GetAxis("Mouse Y") * MouseSensitivity;
 
             //Clamp the y Rotation to horizon and not flipping over at the top
-            _LocalRotation.y = Mathf.Clamp(_LocalRotation.y, 0f, 90f);
+            //_LocalRotation.y = Mathf.Clamp(_LocalRotation.y, 0f, 90f);
             //}
             if (RotateAroundPlayer)
             {
                 Quaternion camTurnAngle = Quaternion.AngleAxis(_LocalRotation.x, Vector3.up);
-                _cameraOffset = camTurnAngle * _cameraOffset;
+                Quaternion camTurnAngle2 = Quaternion.AngleAxis(_LocalRotation.y, Vector3.left);
+                _cameraOffset = camTurnAngle *camTurnAngle2* _cameraOffset;
 
                 //Player Movement
                 PlayerTransform.Rotate(new Vector3(0f, _LocalRotation.x, 0f));
