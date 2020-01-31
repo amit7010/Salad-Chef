@@ -63,7 +63,7 @@ public class ThirdPersonCam : MonoBehaviour
                 Quaternion camTurnAngle2 = Quaternion.AngleAxis(_LocalRotation.y, Vector3.left);
                 _cameraOffset = camTurnAngle *camTurnAngle2* _cameraOffset;
 
-                //Player Movement
+                //Player Rotation
                 PlayerTransform.Rotate(new Vector3(0f, _LocalRotation.x, 0f));
             }
 
