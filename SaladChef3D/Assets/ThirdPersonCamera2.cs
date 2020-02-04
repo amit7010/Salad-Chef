@@ -12,7 +12,7 @@ public class ThirdPersonCamera2 : MonoBehaviour
 
     Transform cameraLookTarget;
 
-    [SerializeField]GameObject localPlayer;
+    [SerializeField] GameObject localPlayer;
 
     protected Vector3 _LocalRotation;
     protected float _CameraDistance = 10f;
@@ -44,7 +44,7 @@ public class ThirdPersonCamera2 : MonoBehaviour
         _LocalRotation.x = /*(Input.GetAxis("Mouse X") * MouseSensitivity) +*/ (CamStick.Horizontal * MouseSensitivity);
         _LocalRotation.y = /*(Input.GetAxis("Mouse Y") * MouseSensitivity) +*/ (CamStick.Vertical * MouseSensitivity);
 
-        if((_LocalRotation.x <0.1f && _LocalRotation.x >- 0.1f) || (_LocalRotation.y < 0.1f && _LocalRotation.y > -0.1f))
+        if ((_LocalRotation.x < 0.1f && _LocalRotation.x > -0.1f) || (_LocalRotation.y < 0.1f && _LocalRotation.y > -0.1f))
         {
             //_LocalRotation.y = Mathf.Clamp(_LocalRotation.y, 0f, 90f);
             Quaternion camTurnAngle = Quaternion.AngleAxis(_LocalRotation.x, Vector3.up);
@@ -54,7 +54,7 @@ public class ThirdPersonCamera2 : MonoBehaviour
 
         Vector3 targetPosition = cameraLookTarget.position + localPlayer.transform.forward * cameraOffset.z +
             localPlayer.transform.up * cameraOffset.y + localPlayer.transform.right * cameraOffset.x;
-        
+
         Quaternion targetRotation = Quaternion.LookRotation(cameraLookTarget.position - targetPosition, Vector3.up);
 
         transform.position = Vector3.Slerp(transform.position, targetPosition, Damping * Time.deltaTime);
